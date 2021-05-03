@@ -3,8 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.30'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'org.knownamee'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -20,3 +20,37 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+jar {
+    
+}
+
+task jarClient(type: Jar) {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }    
+    manifest {
+        attributes 'Main-Class': 'client.MainKt'
+    }
+    destinationDir = file("$rootDir/jar")
+    baseName = 'client'
+    with jar
+}
+
+task jarServer(type: Jar) {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    manifest {
+        attributes 'Main-Class': 'server.MainKt'
+    }
+    destinationDir = file("$rootDir/jar")
+    baseName = 'server'
+    with jar
+}
+
+artifacts {
+    archives jarClient, jarServer
+}
+
+
